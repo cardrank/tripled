@@ -74,14 +74,7 @@ func (res Result) WriteTo(w io.Writer) (int64, error) {
 
 // Symbols produces a string representing the final view of the result.
 func (res Result) Symbols() string {
-	var sb strings.Builder
-	for i, s := range Symbols(res.Pos) {
-		if i != 0 && i%3 == 0 {
-			_ = sb.WriteByte('\n')
-		}
-		_, _ = sb.WriteRune(s.Rune())
-	}
-	return sb.String()
+	return SymbolsString(res.Pos)
 }
 
 // Symbol is a slot symbol.
@@ -171,6 +164,18 @@ func Symbols(pos []int) []Symbol {
 		}
 	}
 	return v
+}
+
+// SymbolsString returns the symbols as a string.
+func SymbolsString(pos []int) string {
+	var sb strings.Builder
+	for i, s := range Symbols(pos) {
+		if i != 0 && i%3 == 0 {
+			_ = sb.WriteByte('\n')
+		}
+		_, _ = sb.WriteRune(s.Rune())
+	}
+	return sb.String()
 }
 
 // Payout determines the payout for the mask in symbols.

@@ -17,15 +17,14 @@ func main() {
 	positions := flag.String("pos", "21,21,21", "positions")
 	n := flag.Int64("n", 2_000_000, "iterations")
 	count := flag.Int("count", 1, "count")
-	lines := flag.Int("lines", 9, "lines")
 	flag.Parse()
-	if err := run(*positions, *n, *count, *lines); err != nil {
+	if err := run(*positions, *n, *count); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func run(positions string, n int64, count, lines int) error {
+func run(positions string, n int64, count int) error {
 	pos, err := parsePositions(positions)
 	if err != nil {
 		return err
@@ -40,7 +39,7 @@ func run(positions string, n int64, count, lines int) error {
 		}
 		if slices.Equal(pos, v) {
 			fmt.Fprintf(os.Stdout, "%2d: %v: % 10d\n", want-count+1, v, i)
-			symbols := lineRE.ReplaceAllString(tripled.NewResult(pos, lines).Symbols(), strings.Repeat(" ", 13))
+			symbols := lineRE.ReplaceAllString(tripled.SymbolsString(pos), strings.Repeat(" ", 13))
 			fmt.Fprintln(os.Stdout, symbols)
 			count--
 		}
