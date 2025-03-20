@@ -1,5 +1,7 @@
 /tripled
 /tripled.exe
+/tdfind
+/tdfind.exe
 
 *.txt
 *.png
