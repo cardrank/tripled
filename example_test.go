@@ -51,8 +51,7 @@ func Example() {
 	// .7.
 	// lines:
 	//  6 payouts 5x
-	//  7 payouts 2x
-	// payout: 7x
+	// payout: 5x
 	//
 	// pos: 12 19 17
 	// ===

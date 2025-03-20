@@ -211,11 +211,12 @@ func Payout(symbols []Symbol, mask int) int {
 		case b3 + b2 + b1:
 			return mlt * 5 // Any Bar -- 5x
 		}
-		// 1 diamond + 2 other
-		return 2
-	case d == 2: // 2x diamond
+	}
+	// 2 or more diamonds
+	switch d {
+	case 2:
 		return 10
-	case d == 1: // 1x diamond
+	case 1:
 		return 2
 	}
 	return 0

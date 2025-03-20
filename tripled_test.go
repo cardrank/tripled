@@ -1,6 +1,7 @@
 package tripled
 
 import (
+	"bytes"
 	"math/rand"
 	"strconv"
 	"testing"
@@ -29,14 +30,23 @@ func TestSpin(t *testing.T) {
 		{1742286608108168119, 19},
 		{1742329474192859291, 69},
 		{1742329476823589538, 15},
+		{9277, 10},
+		{15475, 308},
+		{27998, 4},
+		{29256, 10},
+		{5813, 23},
 	}
 	for i, test := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Logf("seed: %d", test.seed)
 			r := rand.New(rand.NewSource(test.seed))
 			res, err := Spin(r, 9)
 			if err != nil {
 				t.Fatalf("expected no error, got: %v", err)
 			}
+			var buf bytes.Buffer
+			_, _ = res.WriteTo(&buf)
+			t.Logf("\n%s\n", buf.String())
 			if res.Payout != test.exp {
 				t.Errorf("expected: %d, got: %d", test.exp, res.Payout)
 			}
