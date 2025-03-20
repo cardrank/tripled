@@ -225,76 +225,76 @@ func Payout(symbols []Symbol, mask int) int {
 // Reels are the slot reels.
 var Reels = [3][22]Symbol{
 	{
-		Blank,
-		Bar1,
-		Blank,
-		Bar2,
-		Blank,
-		Bar1,
-		Blank,
-		Bar3, // 8
-		Blank,
-		Bar1,
-		Blank,
-		Bar2,
-		Blank,
-		Bar1,
-		Blank,
-		Seven,
-		Blank,
-		Bar1,
-		Blank,
-		Bar1,
-		Blank,
-		Diamond,
+		Blank,   // 0
+		Bar1,    // 1
+		Blank,   // 2
+		Bar2,    // 3
+		Blank,   // 4
+		Bar1,    // 5
+		Blank,   // 6
+		Bar3,    // 7
+		Blank,   // 8
+		Bar1,    // 9
+		Blank,   // 10
+		Bar2,    // 11
+		Blank,   // 12
+		Bar1,    // 13
+		Blank,   // 14
+		Seven,   // 15
+		Blank,   // 16
+		Bar1,    // 17
+		Blank,   // 18
+		Bar1,    // 19
+		Blank,   // 20
+		Diamond, // 21
 	},
 	{
-		Blank,
-		Blank,
-		Bar2,
-		Blank,
-		Bar1,
-		Blank,
-		Bar2,
-		Blank,
-		Bar3,
-		Blank,
-		Seven,
-		Blank,
-		Bar2,
-		Blank,
-		Bar2,
-		Blank,
-		Bar3,
-		Blank,
-		Bar2,
-		Blank,
-		Blank,
-		Diamond,
+		Blank,   // 0
+		Blank,   // 1
+		Bar2,    // 2
+		Blank,   // 3
+		Bar1,    // 4
+		Blank,   // 5
+		Bar2,    // 6
+		Blank,   // 7
+		Bar3,    // 8
+		Blank,   // 9
+		Seven,   // 10
+		Blank,   // 11
+		Bar2,    // 12
+		Blank,   // 13
+		Bar2,    // 14
+		Blank,   // 15
+		Bar3,    // 16
+		Blank,   // 17
+		Bar2,    // 18
+		Blank,   // 19
+		Blank,   // 20
+		Diamond, // 21
 	},
 	{
-		Blank,
-		Blank,
-		Bar1,
-		Blank,
-		Bar2,
-		Blank,
-		Bar1,
-		Blank,
-		Bar3,
-		Blank,
-		Seven,
-		Blank,
-		Bar1,
-		Blank,
-		Bar1,
-		Blank,
-		Bar2,
-		Blank,
-		Bar1,
-		Blank,
-		Blank,
-		Diamond,
+		Blank,   // 0
+		Blank,   // 1
+		Bar1,    // 2
+		Blank,   // 3
+		Bar2,    // 4
+		Blank,   // 5
+		Bar1,    // 6
+		Blank,   // 7
+		Bar3,    // 8
+		Blank,   // 9
+		Seven,   // 10
+		Blank,   // 11
+		Bar1,    // 12
+		Blank,   // 13
+		Bar1,    // 14
+		Blank,   // 15
+		Bar2,    // 16
+		Blank,   // 17
+		Bar1,    // 18
+		Blank,   // 19
+		Blank,   // 20
+		Diamond, // 21
 	},
 }
 

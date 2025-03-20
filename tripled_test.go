@@ -35,6 +35,10 @@ func TestSpin(t *testing.T) {
 		{27998, 4},
 		{29256, 10},
 		{5813, 23},
+		{26646, 19},
+		{498, 6},
+		{7035, 0},
+		{8472, 0},
 	}
 	for i, test := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
