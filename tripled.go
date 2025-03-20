@@ -300,26 +300,26 @@ var Reels = [3][22]Symbol{
 
 // Lines are the payout lines.
 var Lines = [9]int{
-	0: CW | CC | CE,
-	1: NW | NC | NE,
-	2: SW | SC | SE,
-	3: NW | CC | SE,
-	4: SW | CC | NE,
-	5: CW | NC | CE,
-	6: CW | SC | CE,
-	7: SW | CC | SE,
-	8: NW | CC | NE,
+	0: cw | cc | ce,
+	1: nw | nc | ne,
+	2: sw | sc | se,
+	3: nw | cc | se,
+	4: sw | cc | ne,
+	5: cw | nc | ce,
+	6: cw | sc | ce,
+	7: sw | cc | se,
+	8: nw | cc | ne,
 }
 
 // Coordinates.
 const (
-	NW = 1 << iota
-	NC
-	NE
-	CW
-	CC
-	CE
-	SW
-	SC
-	SE
+	nw = 1 << iota
+	nc
+	ne
+	cw
+	cc
+	ce
+	sw
+	sc
+	se
 )
