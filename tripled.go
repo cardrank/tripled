@@ -2,10 +2,7 @@ package tripled
 
 import (
 	"fmt"
-	"io"
-	"maps"
 	"math"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -13,68 +10,6 @@ import (
 // Rand is the shared random interface.
 type Rand interface {
 	Intn(n int) int
-}
-
-// Spin spins the reels, calculating the results for the spin.
-func Spin(r Rand, lines int) (Result, error) {
-	// validate
-	if lines <= 0 || len(Lines) < lines {
-		return Result{}, ErrInvalidLines
-	}
-	// randomize reel positions
-	pos := make([]int, len(Reels))
-	for i := range len(Reels) {
-		pos[i] = r.Intn(len(Reels[i]))
-	}
-	return NewResult(pos, lines), nil
-}
-
-// Result is a spin result.
-type Result struct {
-	Pos    []int       `json:"pos"`
-	Lines  map[int]int `json:"lines"`
-	Payout int         `json:"payout"`
-}
-
-// NewResult creates a result with the specified reel positions.
-func NewResult(pos []int, lines int) Result {
-	res := Result{
-		Pos:   pos,
-		Lines: make(map[int]int),
-	}
-	// determine payout
-	symbols := Symbols(res.Pos)
-	for i := range lines {
-		if d := Payout(symbols, Lines[i]); d != 0 {
-			res.Lines[i] = d
-			res.Payout += d
-		}
-	}
-	return res
-}
-
-// Format satisfies the [fmt.Formatter] interface.
-func (res Result) Format(f fmt.State, verb rune) {
-	_, _ = res.WriteTo(f)
-}
-
-// WriteTo writes result to the writer.
-func (res Result) WriteTo(w io.Writer) (int64, error) {
-	fmt.Fprintf(w, "pos: %d %d %d\n", res.Pos[0], res.Pos[1], res.Pos[2])
-	fmt.Fprintf(w, "%s\n", res.Symbols())
-	if len(res.Lines) > 0 {
-		fmt.Fprintln(w, "lines:")
-		for _, k := range slices.Sorted(maps.Keys(res.Lines)) {
-			fmt.Fprintf(w, "% 2d payouts %dx\n", k+1, res.Lines[k])
-		}
-	}
-	fmt.Fprintf(w, "payout: %dx", res.Payout)
-	return 0, nil
-}
-
-// Symbols produces a string representing the final view of the result.
-func (res Result) Symbols() string {
-	return SymbolsString(res.Pos)
 }
 
 // Symbol is a slot symbol.
@@ -155,21 +90,21 @@ const (
 )
 
 // Symbols returns the symbols in the positions.
-func Symbols(pos []int) []Symbol {
-	v := make([]Symbol, 9)
+func Symbols(pos ...int) []Symbol {
+	symbols := make([]Symbol, 9)
 	for j := range 3 {
 		for i := range 3 {
 			n := len(Reels[i])
-			v[i+j*3] = Reels[i][(((pos[i]+j-1)%n)+n)%n]
+			symbols[i+j*3] = Reels[i][(((pos[i]+j-1)%n)+n)%n]
 		}
 	}
-	return v
+	return symbols
 }
 
 // SymbolsString returns the symbols as a string.
-func SymbolsString(pos []int) string {
+func SymbolsString(pos ...int) string {
 	var sb strings.Builder
-	for i, s := range Symbols(pos) {
+	for i, s := range Symbols(pos...) {
 		if i != 0 && i%3 == 0 {
 			_ = sb.WriteByte('\n')
 		}
@@ -178,14 +113,15 @@ func SymbolsString(pos []int) string {
 	return sb.String()
 }
 
-// Payout determines the payout for the mask in symbols.
-func Payout(symbols []Symbol, mask int) int {
+// Payout determines the payout for matching line symbols based on the bit
+// mask.
+func Payout(mask int, line ...Symbol) int {
 	d, s, b3, b2, b1, n := 0, 0, 0, 0, 0, 0
-	for i := range 9 {
-		if symbols[i] == Blank || mask&(1<<i) == 0 {
+	for i := range len(line) {
+		if line[i] == Blank || mask&(1<<i) == 0 {
 			continue
 		}
-		switch symbols[i] {
+		switch line[i] {
 		case Diamond:
 			d++
 		case Seven:
@@ -200,19 +136,18 @@ func Payout(symbols []Symbol, mask int) int {
 		n++
 	}
 	switch {
-	case d == 3: // 3x diamond
-		return 1199
-	case n == 3:
-		// diamond multiplier
+	case d == 3:
+		return 1199 // 3x diamond -- 1199x
+	case n == 3: // diamond multiplier
 		switch mlt := int(math.Pow(3, float64(d))); n - d {
 		case s:
-			return mlt * 100 // 3x Seven -- 20x
+			return mlt * 100 // 3x Seven -- 100x
 		case b3:
-			return mlt * 40 // 3x Bar3 -- 8x
+			return mlt * 40 // 3x Bar3 -- 40x
 		case b2:
-			return mlt * 20 // 3x Bar2 -- 4x
+			return mlt * 20 // 3x Bar2 -- 20x
 		case b1:
-			return mlt * 10 // 3x Bar1 -- 2x
+			return mlt * 10 // 3x Bar1 -- 10x
 		case b3 + b2 + b1:
 			return mlt * 5 // Any Bar -- 5x
 		}
@@ -227,7 +162,7 @@ func Payout(symbols []Symbol, mask int) int {
 	return 0
 }
 
-// Reels are the slot reels.
+// Reels are reels of slot symbols.
 var Reels = [3][22]Symbol{
 	{
 		Blank,   // 0
@@ -303,7 +238,7 @@ var Reels = [3][22]Symbol{
 	},
 }
 
-// Lines are the payout lines.
+// Lines are pay line masks.
 var Lines = [9]int{
 	0: cw | cc | ce,
 	1: nw | nc | ne,
@@ -316,7 +251,7 @@ var Lines = [9]int{
 	8: nw | cc | ne,
 }
 
-// Coordinates.
+// coordinates.
 const (
 	nw = 1 << iota
 	nc
