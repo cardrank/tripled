@@ -110,7 +110,7 @@ func TestDistPulls(t *testing.T) {
 				m[res.Payout]++
 				pulls++
 			}
-			t.Logf("pulls: %d", pulls)
+			t.Logf("pulls: %d/%d (%0.2f%%)", pulls-m[0], pulls, 100.0*float64(pulls-m[0])/float64(pulls))
 			keys := slices.Sorted(maps.Keys(m))
 			slices.Reverse(keys)
 			for _, k := range keys {
