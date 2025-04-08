@@ -1,8 +1,8 @@
+// Package tripled implements Triple Diamond slots logic.
 package tripled
 
 import (
 	"fmt"
-	"io"
 	"maps"
 	"math"
 	"math/rand"
@@ -86,7 +86,7 @@ func Spin(r Rand, lines int) (Result, error) {
 	}
 	// randomize reel positions
 	pos := make([]int, len(Reels))
-	for i := range len(Reels) {
+	for i := range Reels {
 		pos[i] = r.Intn(len(Reels[i]))
 	}
 	return NewResult(lines, pos...), nil
@@ -120,22 +120,16 @@ func NewResult(lines int, pos ...int) Result {
 }
 
 // Format satisfies the [fmt.Formatter] interface.
-func (res Result) Format(f fmt.State, verb rune) {
-	_, _ = res.WriteTo(f)
-}
-
-// WriteTo writes result to the writer.
-func (res Result) WriteTo(w io.Writer) (int64, error) {
-	fmt.Fprintf(w, "pos: %d %d %d\n", res.Pos[0], res.Pos[1], res.Pos[2])
-	fmt.Fprintf(w, "%s\n", res.Symbols())
+func (res Result) Format(f fmt.State, _ rune) {
+	fmt.Fprintf(f, "pos: %d %d %d\n", res.Pos[0], res.Pos[1], res.Pos[2])
+	fmt.Fprintf(f, "%s\n", res.Symbols())
 	if len(res.Lines) > 0 {
-		fmt.Fprintln(w, "lines:")
+		fmt.Fprintln(f, "lines:")
 		for _, k := range slices.Sorted(maps.Keys(res.Lines)) {
-			fmt.Fprintf(w, "% 2d payouts %dx\n", k+1, res.Lines[k])
+			fmt.Fprintf(f, "% 2d payouts %dx\n", k+1, res.Lines[k])
 		}
 	}
-	fmt.Fprintf(w, "payout: %dx", res.Payout)
-	return 0, nil
+	fmt.Fprintf(f, "payout: %dx", res.Payout)
 }
 
 // Symbols produces a string representing the final view of the result.
@@ -248,7 +242,7 @@ func SymbolsString(pos ...int) string {
 // mask.
 func Payout(mask int, line ...Symbol) int {
 	d, s, b3, b2, b1, n := 0, 0, 0, 0, 0, 0
-	for i := range len(line) {
+	for i := range line {
 		if line[i] == Blank || mask&(1<<i) == 0 {
 			continue
 		}

@@ -1,3 +1,4 @@
+// Command tdfind finds triple diamond seeds. Useful for finding example seeds.
 package main
 
 import (

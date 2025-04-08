@@ -1,7 +1,6 @@
 package tripled
 
 import (
-	"bytes"
 	"maps"
 	"math/rand"
 	"slices"
@@ -55,9 +54,7 @@ func TestSpin(t *testing.T) {
 			if err != nil {
 				t.Fatalf("expected no error, got: %v", err)
 			}
-			var buf bytes.Buffer
-			_, _ = res.WriteTo(&buf)
-			t.Logf("\n%s\n", buf.String())
+			t.Logf("\n%s\n", res)
 			if res.Payout != test.exp {
 				t.Errorf("expected: %d, got: %d", test.exp, res.Payout)
 			}

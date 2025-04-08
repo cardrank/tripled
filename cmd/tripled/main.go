@@ -1,3 +1,4 @@
+// Command tripled is a command-line implementation of Triple Diamond slots.
 package main
 
 import (

@@ -1,0 +1,23 @@
+version: "2"
+linters:
+  default: all
+  settings:
+    gosec:
+      excludes:
+        - G404
+    cyclop:
+      max-complexity: 20
+  disable:
+    - depguard
+    - err113
+    - errcheck
+    - exhaustive
+    - exhaustruct
+    - gochecknoglobals
+    - mnd
+    - nlreturn
+    - paralleltest
+    - testpackage
+    - varnamelen
+    - wrapcheck
+    - wsl
