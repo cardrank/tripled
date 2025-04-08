@@ -9,18 +9,18 @@ import (
 
 func Example() {
 	for i, seed := range []int64{
-		562,
-		1382,
-		1444,
-		3702,
-		11032,
+		7689,
+		9085,
+		18623,
+		2931,
+		16614,
 	} {
 		if i != 0 {
 			fmt.Println()
 		}
 		// note: use a real rng source
 		r := rand.New(rand.NewSource(seed))
-		res, err := tripled.Spin(r, 9)
+		res, err := tripled.DefaultDist.Spin(r, 9)
 		if err != nil {
 			panic(err)
 		}

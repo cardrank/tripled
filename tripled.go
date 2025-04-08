@@ -2,14 +2,145 @@ package tripled
 
 import (
 	"fmt"
+	"io"
+	"maps"
 	"math"
+	"math/rand"
+	"slices"
 	"strconv"
 	"strings"
 )
 
+// DefaultShuffles is the default shuffles.
+var DefaultShuffles = 3
+
+// DefaultPayout is the default payout.
+var DefaultPayout = 0.97
+
+// DefaultDist is the default dist.
+var DefaultDist = NewDist(DefaultPayout)
+
 // Rand is the shared random interface.
 type Rand interface {
 	Intn(n int) int
+}
+
+// Dist is a dist.
+type Dist struct {
+	strip [9][][]int
+}
+
+// NewDist creates a dist.
+func NewDist(f float64) *Dist {
+	if f <= 0.0 || 1.0 <= f {
+		panic("invalid f")
+	}
+	d := new(Dist)
+	for n := range 9 {
+		var payout int
+		var w, l [][]int
+		for i := range 22 {
+			for j := range 22 {
+				for k := range 22 {
+					res := NewResult(n+1, i, j, k)
+					if res.Payout != 0 {
+						w = append(w, res.Pos)
+						payout += res.Payout // delta
+					} else {
+						l = append(l, res.Pos)
+					}
+				}
+			}
+		}
+		// fill
+		d.strip[n] = make([][]int, int(math.Ceil(float64(payout)/float64(n+1)/f)))
+		copy(d.strip[n], w)
+		for i := len(w); i < len(d.strip[n]); i += len(l) {
+			copy(d.strip[n][i:], l)
+		}
+		// shuffle
+		r := rand.New(rand.NewSource(1788975))
+		for range DefaultShuffles {
+			r.Shuffle(len(d.strip[n]), func(i, j int) {
+				d.strip[n][i], d.strip[n][j] = d.strip[n][j], d.strip[n][i]
+			})
+		}
+	}
+	return d
+}
+
+// Spin spins the reels.
+func (d *Dist) Spin(r Rand, lines int) (Result, error) {
+	// validate
+	if lines < 1 || len(Lines) < lines {
+		return Result{}, ErrInvalidLines
+	}
+	return NewResult(lines, d.strip[lines-1][r.Intn(len(d.strip[lines-1]))]...), nil
+}
+
+// Spin spins the reels, calculating the results for the spin.
+func Spin(r Rand, lines int) (Result, error) {
+	// validate
+	if lines <= 0 || len(Lines) < lines {
+		return Result{}, ErrInvalidLines
+	}
+	// randomize reel positions
+	pos := make([]int, len(Reels))
+	for i := range len(Reels) {
+		pos[i] = r.Intn(len(Reels[i]))
+	}
+	return NewResult(lines, pos...), nil
+}
+
+// Result is a spin result.
+type Result struct {
+	Pos    []int       `json:"pos"`
+	Lines  map[int]int `json:"lines"`
+	Payout int         `json:"payout"`
+}
+
+// NewResult creates a result with the specified reel positions.
+func NewResult(lines int, pos ...int) Result {
+	if len(pos) != len(Reels) {
+		panic(fmt.Sprintf("must have %d pos", len(Reels)))
+	}
+	res := Result{
+		Pos:   pos,
+		Lines: make(map[int]int),
+	}
+	// determine payout
+	symbols := Symbols(res.Pos...)
+	for i := range lines {
+		if d := Payout(Lines[i], symbols...); d != 0 {
+			res.Lines[i] = d
+			res.Payout += d
+		}
+	}
+	return res
+}
+
+// Format satisfies the [fmt.Formatter] interface.
+func (res Result) Format(f fmt.State, verb rune) {
+	_, _ = res.WriteTo(f)
+}
+
+// WriteTo writes result to the writer.
+func (res Result) WriteTo(w io.Writer) (int64, error) {
+	fmt.Fprintf(w, "pos: %d %d %d\n", res.Pos[0], res.Pos[1], res.Pos[2])
+	fmt.Fprintf(w, "%s\n", res.Symbols())
+	if len(res.Lines) > 0 {
+		fmt.Fprintln(w, "lines:")
+		for _, k := range slices.Sorted(maps.Keys(res.Lines)) {
+			fmt.Fprintf(w, "% 2d payouts %dx\n", k+1, res.Lines[k])
+		}
+	}
+	fmt.Fprintf(w, "payout: %dx", res.Payout)
+	return 0, nil
+}
+
+// Symbols produces a string representing the final view of the result.
+func (res Result) Symbols() string {
+	return SymbolsString(res.Pos...)
 }
 
 // Symbol is a slot symbol.

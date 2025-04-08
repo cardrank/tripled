@@ -32,14 +32,13 @@ func run(positions string, n int64, count int) error {
 	want := count
 	for i := int64(0); i < n && count > 0; i++ {
 		r := rand.New(rand.NewSource(i))
-		v := []int{
-			r.Intn(22),
-			r.Intn(22),
-			r.Intn(22),
+		res, err := tripled.DefaultDist.Spin(r, 9)
+		if err != nil {
+			return err
 		}
-		if slices.Equal(pos, v) {
-			fmt.Fprintf(os.Stdout, "%2d: %v: % 10d\n", want-count+1, v, i)
-			symbols := lineRE.ReplaceAllString(tripled.SymbolsString(pos), strings.Repeat(" ", 13))
+		if slices.Equal(pos, res.Pos) {
+			fmt.Fprintf(os.Stdout, "%2d: %v: % 10d\n", want-count+1, res.Pos, i)
+			symbols := lineRE.ReplaceAllString(tripled.SymbolsString(pos...), strings.Repeat(" ", 13))
 			fmt.Fprintln(os.Stdout, symbols)
 			count--
 		}
