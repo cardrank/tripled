@@ -9,6 +9,7 @@ import (
 
 func Example() {
 	for i, seed := range []int64{
+		507,
 		7689,
 		9085,
 		18623,
@@ -27,6 +28,12 @@ func Example() {
 		fmt.Println(res)
 	}
 	// Output:
+	// pos: 1 12 17
+	// ..=
+	// -=.
+	// ..-
+	// payout: 0x
+	//
 	// pos: 7 0 8
 	// .◆.
 	// ≡.≡
