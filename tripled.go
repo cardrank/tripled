@@ -197,7 +197,7 @@ func (s Symbol) Rune() rune {
 	case Diamond:
 		return '◆'
 	}
-	return '.'
+	return '∙'
 }
 
 // Error is an error.
