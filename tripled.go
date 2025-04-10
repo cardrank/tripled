@@ -108,8 +108,8 @@ func NewResult(lines int, pos ...int) Result {
 		Pos:   pos,
 		Lines: make(map[int]int),
 	}
-	// determine payout
-	symbols := Symbols(res.Pos...)
+	symbols := Symbols(pos...)
+	// line payout
 	for i := range lines {
 		if d := Payout(Lines[i], symbols...); d != 0 {
 			res.Lines[i] = d
