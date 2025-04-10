@@ -44,7 +44,7 @@ func Example() {
 	// ∙∙∙
 	// -∙-
 	// lines:
-	//  2 payouts 20x
+	//  2 pays 20x
 	// payout: 20x
 	// ---------
 	// seed: 4981
@@ -53,9 +53,9 @@ func Example() {
 	// ◆∙∙
 	// ∙≡=
 	// lines:
-	//  1 payouts 2x
-	//  6 payouts 2x
-	//  7 payouts 2x
+	//  1 pays 2x
+	//  6 pays 2x
+	//  7 pays 2x
 	// payout: 6x
 	// ---------
 	// seed: 7689
@@ -64,8 +64,8 @@ func Example() {
 	// ≡∙≡
 	// ∙∙∙
 	// lines:
-	//  2 payouts 2x
-	//  6 payouts 120x
+	//  2 pays 2x
+	//  6 pays 120x
 	// payout: 122x
 	// ---------
 	// seed: 9085
@@ -74,8 +74,8 @@ func Example() {
 	// ∙∙∙
 	// -=-
 	// lines:
-	//  2 payouts 100x
-	//  3 payouts 5x
+	//  2 pays 100x
+	//  3 pays 5x
 	// payout: 105x
 	// ---------
 	// seed: 12415
@@ -84,12 +84,12 @@ func Example() {
 	// ∙◆∙
 	// -∙∙
 	// lines:
-	//  1 payouts 2x
-	//  2 payouts 10x
-	//  4 payouts 10x
-	//  5 payouts 90x
-	//  8 payouts 2x
-	//  9 payouts 1199x
+	//  1 pays 2x
+	//  2 pays 10x
+	//  4 pays 10x
+	//  5 pays 90x
+	//  8 pays 2x
+	//  9 pays 1199x
 	// payout: 1313x
 	// ---------
 	// seed: 16614
@@ -98,12 +98,12 @@ func Example() {
 	// ∙◆∙
 	// -∙-
 	// lines:
-	//  1 payouts 2x
-	//  2 payouts 2x
-	//  4 payouts 90x
-	//  5 payouts 2x
-	//  8 payouts 30x
-	//  9 payouts 10x
+	//  1 pays 2x
+	//  2 pays 2x
+	//  4 pays 90x
+	//  5 pays 2x
+	//  8 pays 30x
+	//  9 pays 10x
 	// payout: 136x
 	// ---------
 	// seed: 18623
@@ -112,6 +112,6 @@ func Example() {
 	// ≡∙-
 	// ∙7∙
 	// lines:
-	//  6 payouts 5x
+	//  6 pays 5x
 	// payout: 5x
 }

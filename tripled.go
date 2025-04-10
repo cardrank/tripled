@@ -121,12 +121,12 @@ func NewResult(lines int, pos ...int) Result {
 
 // Format satisfies the [fmt.Formatter] interface.
 func (res Result) Format(f fmt.State, _ rune) {
-	fmt.Fprintf(f, "pos: %d %d %d\n", res.Pos[0], res.Pos[1], res.Pos[2])
-	fmt.Fprintf(f, "%s\n", res.Symbols())
+	fmt.Fprintln(f, "pos:", res.Pos[0], res.Pos[1], res.Pos[2])
+	fmt.Fprintln(f, res.Symbols())
 	if len(res.Lines) > 0 {
 		fmt.Fprintln(f, "lines:")
-		for _, k := range slices.Sorted(maps.Keys(res.Lines)) {
-			fmt.Fprintf(f, "% 2d payouts %dx\n", k+1, res.Lines[k])
+		for _, n := range slices.Sorted(maps.Keys(res.Lines)) {
+			fmt.Fprintf(f, "% 2d pays %dx\n", n+1, res.Lines[n])
 		}
 	}
 	fmt.Fprintf(f, "payout: %dx", res.Payout)
