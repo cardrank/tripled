@@ -4,8 +4,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"maps"
 	"math/rand"
 	"os"
+	"slices"
 	"time"
 
 	"github.com/cardrank/tripled"
@@ -31,7 +33,7 @@ func run(seed int64, lines, pulls int) error {
 		fmt.Fprintln(os.Stdout, "seed:", t)
 	}
 	r := rand.New(rand.NewSource(t))
-	won, bet := 0, 0
+	win, won, bet, dist := 0, 0, 0, make(map[int]int)
 	for range pulls {
 		res, err := tripled.DefaultDist.Spin(r, lines)
 		if err != nil {
@@ -40,7 +42,21 @@ func run(seed int64, lines, pulls int) error {
 		fmt.Fprintf(os.Stdout, "%c\n", res)
 		won += res.Payout
 		bet += lines
+		dist[res.Payout]++
+		if res.Payout != 0 {
+			win++
+		}
 	}
-	fmt.Fprintf(os.Stdout, "won: %d/%d (%0.2f%%)\n", won, bet, 100.0*float64(won)/float64(bet))
+	keys := slices.Sorted(maps.Keys(dist))
+	slices.Reverse(keys)
+	for _, k := range keys {
+		fmt.Fprintf(os.Stdout, "%4d: %d\n", k, dist[k])
+	}
+	fmt.Fprintf(
+		os.Stdout,
+		"win: %d/%d (%0.2f%%) won: %d/%d (%0.2f%%)\n",
+		win, pulls, 100.0*float64(win)/float64(pulls),
+		won, bet, 100.0*float64(won)/float64(bet),
+	)
 	return nil
 }
