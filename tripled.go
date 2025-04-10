@@ -30,9 +30,9 @@ type Dist struct {
 	strip [9][][]int
 }
 
-// NewDist creates a dist.
-func NewDist(f float64) *Dist {
-	if f <= 0.0 || 1.0 <= f {
+// NewDist creates a dist with the specified return-to-player (RTP) value.
+func NewDist(rtp float64) *Dist {
+	if rtp <= 0.0 || 1.0 <= rtp {
 		panic("invalid f")
 	}
 	d := new(Dist)
@@ -53,7 +53,7 @@ func NewDist(f float64) *Dist {
 			}
 		}
 		// fill
-		d.strip[n] = make([][]int, int(math.Ceil(float64(payout)/float64(n+1)/f)))
+		d.strip[n] = make([][]int, int(math.Ceil(float64(payout)/float64(n+1)/rtp)))
 		copy(d.strip[n], w)
 		for i := len(w); i < len(d.strip[n]); i += len(l) {
 			copy(d.strip[n][i:], l)
